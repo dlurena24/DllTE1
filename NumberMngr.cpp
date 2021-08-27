@@ -6,6 +6,29 @@
 
 using namespace std;
 
+class PagedArray{
+    public:
+    fstream myFileOut;
+    
+    void createPages(vector<int>intArray){
+        
+        cout << "bruhpage" << "\n";
+        myFileOut.open("archivoOut.txt", ios::app);//Write  
+        if (myFileOut.is_open()){
+            for (int i = 0; i < intArray.size(); i++) 
+            {
+                myFileOut << intArray.at(i) << ",";
+                //std::cout << intArray.at(i) << ' ';
+            }
+            myFileOut << "\n";
+            myFileOut.close();
+        }
+    }
+
+    
+};
+
+
 class ToQuickSort{
     public:
     vector<int>numberArray;
@@ -49,60 +72,57 @@ class ToQuickSort{
 class FileScanner {
     public:
     string rfile;
-    fstream myFileIn, myFileOut;
+    fstream myFileIn/*, myFileOut*/;
     vector<int> numberArray;
+    PagedArray pArray;
 
     FileScanner(string file){
         rfile = file;
     }
 
     void read(){
+        cout << "bruhread" << "\n";
         myFileIn.open("archivo.txt", ios::in);//Read
         if (myFileIn.is_open())
         {
             string line, value;
             int intValue;
+            int counter = 0;
             while(getline(myFileIn, line)){
                 while(getline(myFileIn, value, ',')){
                     //---------------------
-                    //cout << value << endl;
-                    numberArray.push_back(stoi(value));
-                    
-
-                    /*myFileOut.open("archivoOut.txt", ios::app);//Write
-                    if (myFileOut.is_open()){
-                        myFileOut << value << "\n";
-                        myFileOut.close();
-                    }*/
-                    //-------------------------
-                }
-                for (int i = 0; i < numberArray.size(); i++) {
-                    std::cout << numberArray.at(i) << ' ';
-                }
-                cout << "\n";
-                ToQuickSort(numberArray).quickSort(numberArray,0,numberArray.size()-1);
-                for (int i = 0; i < numberArray.size(); i++) {
-                    std::cout << numberArray.at(i) << ' ';
-                }
-                myFileOut.open("archivoOut.txt", ios::app);//Write
-                    if (myFileOut.is_open()){
+                    if (counter < 5) {
+                        counter++;
+                        cout << "\n" << counter << "\n";
+                        cout << "bruhif1" << "\n";
+                        numberArray.push_back(stoi(value));
                         for (int i = 0; i < numberArray.size(); i++) 
                         {
-                            myFileOut << numberArray.at(i) << ",";
-                            //std::cout << numberArray.at(i) << ' ';
+                            cout << numberArray.at(i) << ",";
                         }
-                        myFileOut.close();
+                        
                     }
+                    if (counter == 5){
+                        cout << "bruhif2" << "\n";
+                        pArray.createPages(numberArray);
+                        counter = 0;
+                        numberArray.clear();
+                    }
+                    //-------------------------
+                }
+                
             }
+            pArray.createPages(numberArray);
             myFileIn.close();
         }
-    
+        
     }
-    
+
 };
 
 
 int main(){
+    cout << "bruhmain" << "\n";
     FileScanner file("archivo");
     file.read();
 
