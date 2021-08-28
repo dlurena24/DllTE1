@@ -24,6 +24,7 @@ class PagedArray{
                 myFileOut << intArray.at(i) << ",";
                 //std::cout << intArray.at(i) << ' ';
             }
+            myFileOut << 0;
             myFileOut << "\n";
             myFileOut.close();
         }
@@ -68,6 +69,26 @@ class ToQuickSort{
         cout << endl;
     } 
 
+    void begin(){
+        fstream pagedFile;
+        vector<int> toOrganize;
+
+        pagedFile.open("archivoOut.txt", ios::in);//Read
+        if (pagedFile.is_open()){
+            string line, value;
+            int intValue;
+            int counter = 0;
+            while(getline(pagedFile, line)){
+                while(getline(pagedFile, value, ',')){
+                    toOrganize.push_back(stoi(value));
+                }
+            }
+            pagedFile.close();
+            quickSort(toOrganize,0,toOrganize.size()-1);
+            printArray(toOrganize);
+        }
+    }
+
 };
 
 /// Recieves the incoming file, reads, scans and organizes the numbers from the file.  
@@ -98,11 +119,11 @@ class FileScanner {
             while(getline(myFileIn, line)){
                 while(getline(myFileIn, value, ',')){
                     //---------------------
-                    if (counter < 5) {
+                    if (counter < 256) {
                         counter++;
                         numberArray.push_back(stoi(value));
                     }
-                    if (counter == 5){
+                    if (counter == 256){
                         pArray.createPages(numberArray);
                         counter = 0;
                         numberArray.clear();
@@ -121,10 +142,17 @@ class FileScanner {
 
 
 int main(){
+    string inFile;
+    ToQuickSort tQS;
+
     cout << "mainRunning" << "\n";
-    FileScanner file("archivo");
+    cout << "Por favor introducir el nombre del archivo a leer: " << "\n"; 
+    cin >> inFile;
+    FileScanner file(inFile);
     file.readNOrganize();
 
+    tQS.begin();
+    
 
     
     system("pause>0");
