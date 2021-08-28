@@ -3,16 +3,20 @@
 #include <string>
 #include <vector>
 
-
 using namespace std;
 
+
+/// Writes the arrays it recives on the output file
 class PagedArray{
     public:
     fstream myFileOut;
     
+    /// Writes on the output file the array it recives
+    ///
+    /// This method recives an array from the FileScanner class
+    /// @see readNOrganize()
     void createPages(vector<int>intArray){
         
-        cout << "bruhpage" << "\n";
         myFileOut.open("archivoOut.txt", ios::app);//Write  
         if (myFileOut.is_open()){
             for (int i = 0; i < intArray.size(); i++) 
@@ -28,26 +32,24 @@ class PagedArray{
     
 };
 
-
+/// Deploys quicksort to organize the numbers introduced
+/// 
+/// 
 class ToQuickSort{
     public:
-    vector<int>numberArray;
-
-    ToQuickSort(vector<int>lnArray){
-        numberArray = lnArray;
-    }
 
     int partition(vector<int>&array,int inicio, int fin){
-    int pivote = array[inicio];
-    int i = inicio + 1;
-    for(int j = i; j <= fin; j++){
-        if(array[j] < pivote){
-            swap(array[i],array[j]);
-            i++;
+        int pivote = array[inicio];
+        int i = inicio + 1;
+
+        for(int j = i; j <= fin; j++){
+            if(array[j] < pivote){
+                swap(array[i],array[j]);
+                i++;
+            }
         }
-    }
-    swap(array[inicio],array[i-1]);
-    return i-1;
+        swap(array[inicio],array[i-1]);
+        return i-1;
     }
 
     void quickSort(vector<int>&array, int inicio, int fin){
@@ -56,7 +58,7 @@ class ToQuickSort{
             quickSort(array,inicio,pivote-1);
             quickSort(array,pivote+1,fin);
         }
-        
+
     }
 
     void printArray(vector<int>array){  
@@ -66,13 +68,16 @@ class ToQuickSort{
         cout << endl;
     } 
 
-    };
+};
 
-
+/// Recieves the incoming file, reads, scans and organizes the numbers from the file.  
+/// 
+/// This class recives a file with numbers from main(), this class will read the numbers from the file, organizes the number into pages and speaks with the PagedArray class to temporaly implement them on the output file.
+/// @see createPages()
 class FileScanner {
     public:
     string rfile;
-    fstream myFileIn/*, myFileOut*/;
+    fstream myFileIn;
     vector<int> numberArray;
     PagedArray pArray;
 
@@ -80,8 +85,10 @@ class FileScanner {
         rfile = file;
     }
 
-    void read(){
-        cout << "bruhread" << "\n";
+    ///Reads and organaizes numbers and tells PageArray to write them.
+    ///
+    ///This method is in charge of recieving a file with numbers, it manages the numbers on arrays and spak with the PageArray class to write them on the output file
+    void readNOrganize(){
         myFileIn.open("archivo.txt", ios::in);//Read
         if (myFileIn.is_open())
         {
@@ -93,17 +100,9 @@ class FileScanner {
                     //---------------------
                     if (counter < 5) {
                         counter++;
-                        cout << "\n" << counter << "\n";
-                        cout << "bruhif1" << "\n";
                         numberArray.push_back(stoi(value));
-                        for (int i = 0; i < numberArray.size(); i++) 
-                        {
-                            cout << numberArray.at(i) << ",";
-                        }
-                        
                     }
                     if (counter == 5){
-                        cout << "bruhif2" << "\n";
                         pArray.createPages(numberArray);
                         counter = 0;
                         numberArray.clear();
@@ -122,9 +121,9 @@ class FileScanner {
 
 
 int main(){
-    cout << "bruhmain" << "\n";
+    cout << "mainRunning" << "\n";
     FileScanner file("archivo");
-    file.read();
+    file.readNOrganize();
 
 
     
